@@ -13,8 +13,10 @@ Example to study and copy: `example/` = **टीचर बनाम राजू
   ink `#3A2415` (warm dark brown outlines) · skin `#E8B486` / shade `#C98F63` · chalk `#FFFDF5`.
 - **One accent per meaning:** red = anger or the FAIL stamp, yellow = the caption keyword and comedy bursts.
   Never use red for decoration.
-- **Faces read at thumbnail size:** dot eyes with a white highlight, thick eyebrows that carry the mood
-  (angry = slanted in, shock = raised, sad = drooped), mouths: flat / smile / smirk / grin / O / sad / wink.
+- **Faces read at thumbnail size:** glossy storybook eyes (white sclera, brown iris, dark pupil, two white
+  sparkles), thick eyebrows that carry the mood (angry = slanted in, shock = raised, sad = drooped),
+  blush cheeks, mouths: flat / smile / smirk / grin / O / sad / wink. Head, torso and legs get a warm ink
+  outline. Look reference: `reference/img1.png … img7.png` (the 10-member family asset pack).
 - **Everything is Indian and named:** सर, राजू, पापा, शर्मा जी, मम्मी. Name tags pop in on each character's
   first appearance. Props: chalkboard, cutting chai, tawa + जली हुई roti, pressure-cooker seeti, the flying
   chappal, ₹500 notes, cricket bat, Chetak scooter, WhatsApp chat.
@@ -26,7 +28,7 @@ Example to study and copy: `example/` = **टीचर बनाम राजू
   no punching down (the kid always outsmarts the adult — never the reverse).
 
 ## 2. Format
-- **1080x1920, 30 fps, 30-40 s.** Lead silence 0.4 s, outro 0.9 s (in `script.json`).
+- **1080x1920 canvas, rendered at 2160x3840 (2x supersample), 30 fps, 30-40 s.** Draw everything in\n  1080x1920 logical coordinates — `main.js` applies the 2x base scale; `index.html` carries the big canvas.\n  Lead silence 0.4 s, outro 0.9 s (in `script.json`).
 - **Story shape (the 5 beats):** the trap question (hook) → the smart-aleck answer → "साइलेंस!" + a threat
   → the counter-attack → the final roast that loops. Every beat = 2-3 lines, every line = one shot.
 - **Dialogue drives it:** each line has `"voice"` — one Kokoro voice per character (`hm_omega` = सर/papa,
@@ -59,15 +61,16 @@ Keep chunks 1-3 words; Devanagari is wider than Latin — never exceed `maxW 900
 `K.classroom(board[])` (blackboard with chalk lines + ledge).
 **Chrome** `K.panel` · `K.pill(text,x,y,size,bg,fg,sc)` · `K.nameTag(text,x,y,col,sc)` · `K.text(str,...)` (Baloo2).
 **People** `K.guy({x,y,s,role,mood,look,arm,flip,t,talk})` — roles `papa · sharma · teacher · student · mom ·
-aunty · kid` (kurta, saree + bun, school cap + bag, glasses, mustache are all preset); moods `flat smile smirk
-grin o sad shock angry wink cry`; arms `down up phone point fold hip raise`. Origin = chest, ~1000 px tall at
-s:1, feet at +556. `t` (film time) drives breathing + blinking; `talk` flaps the mouth on the spoken line;
-a ground shadow is drawn automatically.
+aunty · kid` plus the family cast `dada (white beard + cane) · dadi · ammi · tau (turban) · chacha · bhaiya ·
+bhabhi · khizar · behan (pigtails) · chhotu`; moods `flat smile smirk grin o sad shock angry wink cry`; arms
+`down up phone point fold hip raise`. Origin = chest, ~1000 px tall at s:1, feet at +556. `t` (film time)
+drives breathing + blinking; `talk` flaps the mouth on the spoken line; a ground shadow is drawn automatically.
 **Props** `K.desk` · `K.paper(x,y,s,{lines,wobble})` (exam/report card) · `K.chai(x,y,s,{steam,t})` ·
 `K.tawa(x,y,s,{burn,smoke,t})` · `K.cooker(x,y,s,{whistle,t})` · `K.chappal(x,y,s,angle,a)` · `K.notes(x,y,s,n,t)` ·
-`K.bat` · `K.scooter(x,y,s,{wobble})`.
+`K.bat` · `K.scooter(x,y,s,{wobble})` · `K.autorickshaw(x,y,s,{t,drive})` (the yellow-black auto).
 **UI** `K.waChat(x,y,s,{name,msgs,typing,t})` — WhatsApp-style chat card, green bubbles for "me".
-**Graphics** `K.arrow` · `K.burst` · `K.shockLines` · `K.angerMark` (manga cross) · `K.sweat` · `K.haha(x,y,s,t,a)` ·
+**Stickers & graphics** `K.sticker(txt,x,y,s,rot,bg)` (WOW!/LOL!/BOOM!/HA HA! starburst) · `K.cloud(x,y,s,t,a)` ·
+`K.arrow` · `K.burst` · `K.shockLines` · `K.angerMark` (manga cross) · `K.sweat` · `K.haha(x,y,s,t,a)` ·
 `K.zoomLines(x,y,r,t,a)` (the savage-moment lines) · `K.povCard(main,sub,pop)`.
 
 ## 6. A shot

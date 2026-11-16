@@ -88,6 +88,7 @@ export function classroom(board = []) {
  */
 export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm = 'down', flip = 1, t = 0, talk = false } = {}) {
   const P = {
+    // core cast
     papa:   { shirt: '#C9A227', pants: '#5A4632', kurta: true, mustache: true, hair: C.hair },
     sharma: { shirt: '#8E9BD6', pants: '#4A4237', kurta: true, mustache: true, glasses: true, hair: C.hair },
     teacher:{ shirt: C.teal, pants: '#4A4237', kurta: true, glasses: true, mustache: false, hair: C.hair },
@@ -95,6 +96,17 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
     mom:    { saree: true, hair: C.hair },
     aunty:  { saree: true, hair: C.hair, glasses: true },
     kid:    { shirt: C.orange, pants: '#4A4237', kurta: false, mustache: false, hair: C.hair },
+    // the full family (the asset-pack cast) — pick these for family skits
+    dada:   { shirt: C.white, pants: '#5A4632', kurta: true, beardFull: true, glasses: true, hair: '#B9B3A8', cane: true },
+    dadi:   { saree: true, hair: '#B9B3A8', glasses: true, sareeCol: '#9B6BA8' },
+    ammi:   { saree: true, hair: C.hair, sareeCol: '#2A9D8F', glasses: false },
+    tau:    { shirt: '#8E2F3C', pants: '#4A4237', kurta: true, mustache: true, turban: '#D2691E', hair: C.hair },
+    chacha: { shirt: '#2E9E5B', pants: '#4A4237', kurta: true, mustache: true, hair: C.hair },
+    bhaiya: { shirt: C.blue, pants: '#33413F', kurta: false, mustache: false, hair: C.hair },
+    bhabhi: { saree: true, hair: C.hair, sareeCol: '#E63946' },
+    khizar: { shirt: C.yellow, pants: '#4A4237', kurta: false, mustache: false, hair: C.hair, bag: true },
+    behan:  { shirt: '#E884B8', pants: '#8E2F3C', kurta: false, mustache: false, hair: C.hair, pig: true },
+    chhotu: { shirt: C.orange, pants: '#4A4237', kurta: false, mustache: false, hair: C.hair, pig: false },
   }[role] || {};
   const shirt = P.shirt || C.orange, pants = P.pants || '#4A4237', kurta = P.kurta;
   // THE LIFE: breathing bob + a blink cycle + talking mouth flaps (all from film time t — deterministic)
@@ -104,8 +116,9 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
   // ground shadow (drawn first, static — the body breathes above it)
   ell(0, 620, 155, 30, 'rgba(58,36,21,0.16)');
   // legs (saree = one drape panel instead)
+  const sc = P.sareeCol || (role === 'mom' ? C.maroon : C.teal);
   if (P.saree) {
-    ctx.fillStyle = role === 'mom' ? C.maroon : C.teal;
+    ctx.fillStyle = sc;
     ctx.beginPath(); ctx.roundRect(-110, 60, 220, 520, 40); ctx.fill();
     ctx.fillStyle = C.goldDark; ctx.fillRect(-110, 380, 220, 26);          // border
   } else {
@@ -119,14 +132,23 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
   // torso (kurta = longer, with a placket line)
   const th = kurta || P.saree ? 400 : 330;
   if (P.saree) {
-    ctx.fillStyle = role === 'mom' ? C.maroon : C.teal;
+    ctx.fillStyle = sc;
     ctx.beginPath(); ctx.roundRect(-125, -60, 250, 300, 60); ctx.fill();
-    ctx.fillStyle = role === 'mom' ? C.gold : C.orange;                    // pallu across
+    ctx.fillStyle = P.pallu || C.gold;                                     // pallu across
     ctx.beginPath(); ctx.moveTo(30, -60); ctx.lineTo(130, 240); ctx.lineTo(40, 240); ctx.lineTo(-40, -60); ctx.fill();
   } else {
     ctx.fillStyle = shirt; ctx.beginPath(); ctx.roundRect(-135, -60, 270, th, 60); ctx.fill();
     ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(-135, th - 60, 270, 44);
     line([[0, -40], [0, 120]], 'rgba(0,0,0,0.25)', 6);                     // placket
+  }
+  // ink outlines (storybook rule: clothes get a warm dark contour)
+  ctx.lineWidth = 7; ctx.strokeStyle = C.ink;
+  if (P.saree) { ctx.beginPath(); ctx.roundRect(-125, -60, 250, 640, 40); ctx.stroke(); }
+  else { ctx.beginPath(); ctx.roundRect(-135, -60, 270, th, 60); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(-95, 130, 78, 400, 30); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(17, 130, 78, 400, 30); ctx.stroke(); }
+  if (P.cane) { // dada ji's walking stick, in the far hand
+    line([[150, 110], [172, 520]], '#8A5A2B', 14); ctx.beginPath(); ctx.arc(172, 528, 10, 0, TAU); ctx.fillStyle = '#8A5A2B'; ctx.fill();
   }
   // arms
   const arms = { down: [0.7, 0.7], up: [-1.2, -1.2], phone: [-1.15, 0.7], point: [-1.35, 0.7], fold: [2.5, -2.5], hip: [0.5, -1.4], raise: [2.6, 2.6] }[arm] || [0.7, 0.7];
@@ -140,39 +162,52 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
     ctx.fillStyle = shirt; ctx.beginPath(); ctx.roundRect(-150, 90, 300, 62, 30); ctx.fill();
     circle(-120, 121, 28, C.skin); circle(120, 121, 28, C.skin);
   }
-  // head
-  const hy = -170, lr = clamp(look, -1, 1) * 12;
-  circle(0, hy, 108, C.skin);
+  // head (storybook look: bigger head, thick ink outline, soft gloss)
+  const hy = -180, lr = clamp(look, -1, 1) * 12;
+  circle(0, hy, 126, C.skin);
+  ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.beginPath(); ctx.arc(0, hy, 126, 0, TAU); ctx.stroke();
+  ctx.globalAlpha = 0.18; ell(-40, hy - 70, 58, 32, C.white); ctx.globalAlpha = 1;   // top-left gloss
   // hair
-  if (P.saree) { ctx.beginPath(); ctx.arc(0, hy - 10, 112, Math.PI * 0.86, Math.PI * 2.14); ctx.fillStyle = C.hair; ctx.fill();
-    circle(78, hy - 62, 42, C.hair); }                                     // bun
-  else { ctx.beginPath(); ctx.arc(0, hy - 14, 110, Math.PI * 0.95, Math.PI * 2.05); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
+  if (P.saree) { ctx.beginPath(); ctx.arc(0, hy - 10, 130, Math.PI * 0.86, Math.PI * 2.14); ctx.fillStyle = C.hair; ctx.fill();
+    circle(88, hy - 66, 48, C.hair); }                                     // bun
+  else { ctx.beginPath(); ctx.arc(0, hy - 14, 128, Math.PI * 0.95, Math.PI * 2.05); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
+  if (P.pig) { circle(-112, hy + 14, 34, C.hair); circle(112, hy + 14, 34, C.hair); }   // pigtails
   if (P.cap) { // school cap
-    ctx.fillStyle = C.blueDark; ctx.beginPath(); ctx.arc(0, hy - 62, 96, Math.PI, 0); ctx.fill();
-    ctx.fillRect(-96, hy - 70, 192, 20); ctx.fillStyle = C.gold; circle(0, hy - 110, 14, C.gold);
+    ctx.fillStyle = C.blueDark; ctx.beginPath(); ctx.arc(0, hy - 66, 112, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-112, hy - 76, 224, 22); ctx.fillStyle = C.gold; circle(0, hy - 120, 15, C.gold);
   }
-  if (P.turban) { ctx.fillStyle = C.orange; ctx.beginPath(); ctx.arc(0, hy - 40, 112, Math.PI, 0); ctx.fill(); ctx.fillRect(-112, hy - 50, 224, 30); }
-  // face
+  if (P.turban) { ctx.fillStyle = P.turban === true ? C.orange : P.turban; ctx.beginPath(); ctx.arc(0, hy - 44, 128, Math.PI, 0); ctx.fill(); ctx.fillRect(-128, hy - 54, 256, 32); }
+  if (P.beardFull) { // the grandpa: full white beard under the mouth
+    ctx.beginPath(); ctx.moveTo(-92, hy + 26); ctx.quadraticCurveTo(0, hy + 210, 92, hy + 26);
+    ctx.quadraticCurveTo(0, hy + 96, -92, hy + 26); ctx.fillStyle = '#E8E4DC'; ctx.fill();
+    ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.stroke();
+  }
+  // face — glossy storybook eyes (sclera + iris + pupil + two sparkles), blink-aware
   const ec = C.ink;
-  if (P.glasses) { circle(-38 + lr, hy - 8, 26, 'rgba(255,255,255,0.15)'); circle(38 + lr, hy - 8, 26, 'rgba(255,255,255,0.15)');
-    ctx.strokeStyle = ec; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(-38 + lr, hy - 8, 26, 0, TAU); ctx.stroke();
-    ctx.beginPath(); ctx.arc(38 + lr, hy - 8, 26, 0, TAU); ctx.stroke(); line([[lr - 12, hy - 8], [lr + 12, hy - 8]], ec, 7); }
-  // eyebrows
-  ctx.strokeStyle = ec; ctx.lineWidth = 11; ctx.lineCap = 'round';
+  if (P.glasses) { ctx.strokeStyle = ec; ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.arc(-48 + lr, hy - 12, 34, 0, TAU); ctx.stroke();
+    ctx.beginPath(); ctx.arc(48 + lr, hy - 12, 34, 0, TAU); ctx.stroke(); line([[lr - 14, hy - 12], [lr + 14, hy - 12]], ec, 7); }
+  // eyebrows (the mood lives here)
+  ctx.strokeStyle = ec; ctx.lineWidth = 12; ctx.lineCap = 'round';
   const brow = { angry: 26, shock: -18, sad: -14, smirk: 8, wink: 0, cry: -10 }[mood] ?? 0;
-  if (mood === 'angry') { line([[lr - 60, hy - 48 + 0], [lr - 16, hy - 34]], ec, 11); line([[lr + 60, hy - 48], [lr + 16, hy - 34]], ec, 11); }
-  else if (mood === 'shock') { line([[lr - 56, hy - 52], [lr - 20, hy - 58]], ec, 11); line([[lr + 20, hy - 58], [lr + 56, hy - 52]], ec, 11); }
-  else { line([[lr - 54, hy - 44 - brow / 2], [lr - 20, hy - 44 + brow / 2]], ec, 11); line([[lr + 20, hy - 44 + brow / 2], [lr + 54, hy - 44 - brow / 2]], ec, 11); }
-  // eyes
-  // eyes (blink closes them into short lines; wink/cry keep their own look)
-  if (blink && mood !== 'wink' && mood !== 'cry') { line([[lr - 52, hy - 8], [lr - 24, hy - 8]], ec, 9); line([[lr + 24, hy - 8], [lr + 52, hy - 8]], ec, 9); }
-  else if (mood === 'wink') { circle(-38 + lr, hy - 8, 13, ec); line([[lr + 20, hy - 8], [lr + 56, hy - 8]], ec, 11); }
-  else if (mood === 'cry') { circle(-38 + lr, hy - 8, 13, ec); circle(38 + lr, hy - 8, 13, ec);
-    ell(-38 + lr, hy + 30, 10, 16, '#7EC8F0'); ell(38 + lr, hy + 30, 10, 16, '#7EC8F0'); }
-  else { circle(-38 + lr, hy - 8, 13, ec); circle(38 + lr, hy - 8, 13, ec); circle(-34 + lr, hy - 12, 4, C.white); circle(42 + lr, hy - 12, 4, C.white); }
+  if (mood === 'angry') { line([[lr - 66, hy - 56], [lr - 20, hy - 40]], ec, 12); line([[lr + 66, hy - 56], [lr + 20, hy - 40]], ec, 12); }
+  else if (mood === 'shock') { line([[lr - 62, hy - 60], [lr - 22, hy - 66]], ec, 12); line([[lr + 22, hy - 66], [lr + 62, hy - 60]], ec, 12); }
+  else { line([[lr - 60, hy - 52 - brow / 2], [lr - 22, hy - 52 + brow / 2]], ec, 12); line([[lr + 22, hy - 52 + brow / 2], [lr + 60, hy - 52 - brow / 2]], ec, 12); }
+  const eye = (ex) => {
+    if (blink && mood !== 'wink' && mood !== 'cry') { line([[ex + lr - 20, hy - 10], [ex + lr + 20, hy - 10]], ec, 9); return; }
+    if (mood === 'wink' && ex > 0) { line([[ex + lr - 20, hy - 10], [ex + lr + 20, hy - 10]], ec, 10); return; }
+    circle(ex + lr, hy - 10, 21, C.white);
+    ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.beginPath(); ctx.arc(ex + lr, hy - 10, 21, 0, TAU); ctx.stroke();
+    circle(ex + lr, hy - 8, 13, '#6B4A2E'); circle(ex + lr, hy - 6, 7, C.ink);
+    circle(ex + lr - 5, hy - 14, 4.5, C.white); circle(ex + lr + 6, hy - 2, 2.5, C.white);   // sparkles
+  };
+  eye(-48); eye(48);
+  // blush cheeks
+  ell(-80 + lr, hy + 38, 17, 11, 'rgba(226,110,110,0.30)'); ell(80 + lr, hy + 38, 17, 11, 'rgba(226,110,110,0.30)');
   // mustache / beard
-  if (P.mustache) { ctx.beginPath(); ctx.ellipse(lr, hy + 26, 40, 14, 0, 0, TAU); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
-  if (P.beard) { ctx.beginPath(); ctx.ellipse(lr, hy + 48, 62, 40, 0, 0, Math.PI); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
+  if (P.mustache) { ctx.beginPath(); ctx.ellipse(lr, hy + 30, 46, 15, 0, 0, TAU); ctx.fillStyle = P.hair || C.hair; ctx.fill();
+    ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.stroke(); }
+  if (P.beard) { ctx.beginPath(); ctx.ellipse(lr, hy + 54, 66, 42, 0, 0, Math.PI); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
   // mouth (when the character speaks, the mouth flaps at ~8 Hz on top of the mood)
   const flap = talk && Math.sin(t * 16 + x * 0.021) > 0;
   ctx.lineWidth = 10;
@@ -278,6 +313,45 @@ export function scooter(x, y, s, { wobble = 0 } = {}) {
   ctx.fillStyle = C.steel; ctx.beginPath(); ctx.roundRect(-30, -250, 110, 70, 24); ctx.fill(); // handlebar
   ctx.fillStyle = '#5A4632'; ctx.beginPath(); ctx.ellipse(0, -60, 120, 44, 0, Math.PI, 0); ctx.fill(); // seat
   ctx.fillStyle = C.well; circle(0, 30, 34, C.well);                      // spare-wheel cover
+  ctx.restore();
+}
+
+// ---------- asset-pack extras ----------
+/** starburst sticker: WOW! / LOL! / BOOM! / HA HA! — pops in with sc */
+export function sticker(txt, x, y, s = 1, rot = 0, bg = C.yellow) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  for (let i = 0; i < 14; i++) { const an = i / 14 * TAU;                 // jagged star behind
+    const r1 = 92, r2 = i % 2 ? 128 : 158;
+    ctx.beginPath(); ctx.moveTo(Math.cos(an) * r1, Math.sin(an) * r1);
+    ctx.lineTo(Math.cos(an + TAU / 28) * r2, Math.sin(an + TAU / 28) * r2);
+    ctx.lineTo(Math.cos(an + TAU / 14) * r1, Math.sin(an + TAU / 14) * r1); ctx.closePath();
+    ctx.fillStyle = bg; ctx.fill(); ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.stroke(); }
+  circle(0, 0, 78, C.white);
+  bigText(txt, 0, 4, txt.length > 4 ? 54 : 72, C.red);
+  ctx.restore();
+}
+/** the classic yellow-black auto rickshaw */
+export function autorickshaw(x, y, s, { t = 0, drive = false } = {}) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  const w = drive ? Math.sin(t * 9) * 3 : 0;
+  ctx.fillStyle = C.yellow;                                               // body
+  ctx.beginPath(); ctx.moveTo(-150, 200); ctx.lineTo(-150, -60); ctx.quadraticCurveTo(-150, -220, 30, -230);
+  ctx.quadraticCurveTo(200, -230, 210, -40); ctx.lineTo(220, 200); ctx.closePath(); ctx.fill();
+  ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.fillRect(-150, 40, 370, 40);                 // black band
+  ctx.fillStyle = '#BEE3F0'; ctx.beginPath(); ctx.roundRect(-120, -190, 300, 150, 30); ctx.fill();  // windscreen
+  ctx.lineWidth = 6; ctx.stroke();
+  line([[-40, -190], [-40, -40]], C.ink, 6);                              // front pillar
+  circle(-60, 200, 56, C.ink); circle(-60, 200, 26, C.steel);             // wheels
+  circle(150, 200, 56, C.ink); circle(150, 200, 26, C.steel);
+  ctx.restore();
+}
+/** a flat puffy cloud that drifts */
+export function cloud(x, y, s = 1, t = 0, a = 1) {
+  ctx.save(); ctx.globalAlpha = a;
+  const dx = Math.sin(t * 0.3) * 14;
+  circle(x + dx, y, 44 * s, C.white); circle(x + dx + 46 * s, y + 10 * s, 34 * s, C.white); circle(x + dx - 46 * s, y + 12 * s, 30 * s, C.white);
+  ell(x + dx, y + 22 * s, 84 * s, 26 * s, C.white);
   ctx.restore();
 }
 

@@ -11,7 +11,9 @@ const OP = (window.OP = { ready: false });
 
 function draw(t) {
   t = clamp(t, 0, T.dur - 1e-4);
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.letterSpacing = '0px';
+  // 2x supersample: the canvas is 2160x3840 but every drawing below uses 1080x1920 logical coordinates —
+  // the 2x base scale renders the film at 4K sharpness (libx264 encodes at the canvas's real size).
+  ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.globalAlpha = 1; ctx.letterSpacing = '0px';
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
   const S = OP._shots; let i = S.length - 1; while (i > 0 && S[i].at > t) i--;
   const sh = S[i], end = i < S.length - 1 ? S[i + 1].at : T.dur, d = end - sh.at, lt = t - sh.at;
