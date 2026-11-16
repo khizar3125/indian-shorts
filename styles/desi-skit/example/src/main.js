@@ -1,6 +1,6 @@
 // Boot: fonts → script + timing → captions → shots. Then draw(t) renders film time t (pure function of t).
 // window.OP is the API tools/capture.mjs drives: ready, bootError, duration(), draw(t), frame(t, q), cues(), shots().
-import { W, H, setCtx, ctx, clamp, eo, eio } from './core/lib.js';
+import { W, H, setCtx, ctx, clamp, eo, eio, rnd } from './core/lib.js';
 import { T, loadTiming } from './core/timing.js';
 import { buildCaptions, drawCaption, captionList } from './core/captions.js';
 import { buildShots } from './shots.js';
