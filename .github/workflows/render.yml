@@ -47,6 +47,9 @@ jobs:
       - name: Install python deps
         run: pip install -q numpy scipy kokoro-onnx faster-whisper
 
+      - name: Install ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+
       - name: Render
         run: bash scripts/ci_render.sh "${{ inputs.project }}" "${{ inputs.mode }}"
 

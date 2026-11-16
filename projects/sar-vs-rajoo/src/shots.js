@@ -97,7 +97,7 @@ export function buildShots() {
 
   // ── 6 · राजू: जीरो की वैल्यू पीछे लगे नंबर से बढ़ती है ────────────────────
   {
-    const st = cut(5), v = Wd('वैल्यू', 5) - st, b = Wd('बढ़ती', 5) - st;
+    const st = cut(5), v = Wd('वैल्यू', 5) - st, b = Wd('बढ़', 5) - st;
     add({ id: 'S06', at: st, cam: [540, 620], zoom: 0.1, note: 'blackboard maths: 0 → 10 with an arrow, sparkles',
       draw(lt, d, t) {
         K.classroom([]);
@@ -156,7 +156,7 @@ export function buildShots() {
 
   // ── 10 · राजू: वो आपसे मिलकर खुद फेल हो जाएंगे ────────────────────────────
   {
-    const st = cut(9), f = Wd('फेल', 10) - st - 0.05;
+    const st = cut(9), f = Wd('फेल', 9) - st - 0.05;
     add({ id: 'S10', at: st, cam: [540, 640], zoom: 0.13, note: 'the FAIL stamp slams on सर; zoom lines',
       draw(lt, d, t) {
         K.classroom([]);
@@ -172,7 +172,7 @@ export function buildShots() {
 
   // ── 11 · सर: साइलेंस!! ────────────────────────────────────────────────────
   {
-    const st = cut(10), sil = Wd('साइलेंस!!', 11) - st - 0.05;
+    const st = cut(10), sil = Wd('साइलेंस!!', 10) - st - 0.05;
     add({ id: 'S11', at: st, cam: [540, 600], zoom: 0.2, note: 'full-frame साइलेंस!! shake',
       draw(lt) {
         K.classroom([]);
