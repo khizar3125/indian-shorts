@@ -35,14 +35,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      # the two free local models (Kokoro voice ~340 MB, Whisper small.en ~0.5 GB) — cached between runs
+      # the two free local models (Kokoro voice ~340 MB, Whisper small ~0.5 GB) — cached between runs
       - name: Cache AI models
         uses: actions/cache@v4
         with:
           path: |
             ~/.faceless-shorts/kokoro
             ~/.cache/huggingface
-          key: models-kokoro-v1.0-whisper-small.en
+          key: models-kokoro-v1.0-whisper-small-multi
 
       - name: Install python deps
         run: pip install -q numpy scipy kokoro-onnx faster-whisper

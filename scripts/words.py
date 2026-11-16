@@ -54,10 +54,10 @@ def inline_fallback(P, S):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('project'); ap.add_argument('--audio'); a = ap.parse_args()
     P = Path(a.project); S = json.loads((P / 'script.json').read_text())
+    LC = S.get('lang', 'hi' if S.get('voice', '').startswith(('hf_', 'hm_')) else 'en')   # whisper/whisper language
     try:
         from faster_whisper import WhisperModel
-        lang = S.get('lang', 'hi' if S.get('voice', '').startswith(('hf_', 'hm_')) else 'en')
-        model = WhisperModel('small' if lang != 'en' else 'small.en', device='cpu', compute_type='int8')
+        model = WhisperModel('small' if LC != 'en' else 'small.en', device='cpu', compute_type='int8')
     except Exception as e:
         if a.audio or not (P / 'data/lines.json').exists():
             raise SystemExit(f'Whisper is needed for your own recording and could not load: {e}')
@@ -68,9 +68,8 @@ def main():
     try:   # decode with ffmpeg ourselves (avoids PyAV version problems), 16 kHz mono float32
         import numpy as np
         raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(P / 'data/narration.wav'), '-ac', '1', '-ar', '16000', '-f', 'f32le', '-'], capture_output=True, check=True).stdout
-        hi = S.get('lang', 'hi' if S.get('voice', '').startswith(('hf_', 'hm_')) else 'en') != 'en'
-    segs, _ = model.transcribe(np.frombuffer(raw, dtype=np.float32), word_timestamps=True, vad_filter=False,
-                               language=(S.get('lang', 'hi') if hi else None))
+        segs, _ = model.transcribe(np.frombuffer(raw, dtype=np.float32), word_timestamps=True, vad_filter=False,
+                                   language=(LC if LC != 'en' else None))
         heard = [(w.word.strip(), w.start + 0.04, w.end) for s in segs for w in s.words]   # Whisper starts run a little early
     except Exception as e:
         if a.audio or not (P / 'data/lines.json').exists():
