@@ -194,7 +194,7 @@ export function buildShots() {
         K.guy({ x: 540, y: 780, s: 0.6, role: 'student', mood: 'wink', arm: 'hip' });
         K.haha(540, 480, 1.3, t, 0.9);
         const p = eob(seg(lt, sil2, sil2 + 0.3));
-        if (p > 0) K.pill('जब जवाब नहीं होता... तो साइलेंस आता है', 540, 1140, 40, C.ink, C.yellow, p);
+        if (p > 0) { ctx.save(); ctx.globalAlpha = p; panel(90, 1090, 900, 110, 26, C.ink, C.ink); text('जब जवाब नहीं होता... तो साइलेंस आता है', 540, 1145, 46, C.yellow, 'center', 800); ctx.restore(); }
       } });
     cue(st, 'whoosh'); cue(st + jab, 'boing'); cue(st + sil2, 'pop');
   }
