@@ -23,6 +23,14 @@ function draw(t) {
   sh.draw(lt, d, t);
   ctx.restore();
   ctx.globalAlpha = 1; ctx.letterSpacing = '0px';
+  // film grade: soft vignette + fine grain — the "cut by a real editor" feel (subtle, never readable as noise)
+  const vg = ctx.createRadialGradient(540, 900, 520, 540, 960, 1250);
+  vg.addColorStop(0, 'rgba(58,36,21,0)'); vg.addColorStop(1, 'rgba(58,36,21,0.16)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(58,36,21,0.5)'; ctx.globalAlpha = 0.06;
+  const f0 = Math.floor(t * 30) * 977;
+  for (let i = 0; i < 120; i++) ctx.fillRect(rnd(i + f0) * W, rnd(i * 3.1 + f0) * H, 3, 3);
+  ctx.globalAlpha = 1;
   if (i > 0 && lt < 0.12) { ctx.fillStyle = '#FFFFFF'; ctx.globalAlpha = 0.55 * (1 - lt / 0.12); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
   // fade from / to black on the first and last 0.25 s
   const fade = Math.min(clamp(t / 0.25), clamp((T.dur - t) / 0.35));

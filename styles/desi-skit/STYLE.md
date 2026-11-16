@@ -18,6 +18,10 @@ Example to study and copy: `example/` = **टीचर बनाम राजू
 - **Everything is Indian and named:** सर, राजू, पापा, शर्मा जी, मम्मी. Name tags pop in on each character's
   first appearance. Props: chalkboard, cutting chai, tawa + जली हुई roti, pressure-cooker seeti, the flying
   chappal, ₹500 notes, cricket bat, Chetak scooter, WhatsApp chat.
+- **The life (never skip — this is what kills the AI look):** every `K.guy()` call passes `t` (film time) and
+  `talk` (true for whoever is speaking that line). From these the kit adds a breathing bob, a blink cycle, a
+  talking mouth flap, and a ground shadow — the character feels alive instead of frozen. A shot without
+  `t`/`talk` looks like a sticker; the QA sheet should catch it.
 - Mood: cheeky, loud, warm — a comedy skit, not a documentary. No gore, no slurs, no real brands,
   no punching down (the kid always outsmarts the adult — never the reverse).
 
@@ -54,9 +58,11 @@ Keep chunks 1-3 words; Devanagari is wider than Latin — never exceed `maxW 900
 **Worlds** `K.street(t)` (sunny gully + sun + chai tapri) · `K.home(lt)` (ghar: window, clock, family photo) ·
 `K.classroom(board[])` (blackboard with chalk lines + ledge).
 **Chrome** `K.panel` · `K.pill(text,x,y,size,bg,fg,sc)` · `K.nameTag(text,x,y,col,sc)` · `K.text(str,...)` (Baloo2).
-**People** `K.guy({x,y,s,role,mood,look,arm,flip})` — roles `papa · sharma · teacher · student · mom · aunty · kid`
-(kurta, saree + bun, school cap + bag, glasses, mustache are all preset); moods `flat smile smirk grin o sad shock
-angry wink cry`; arms `down up phone point fold hip raise`. Origin = chest, ~1000 px tall at s:1, feet at +556.
+**People** `K.guy({x,y,s,role,mood,look,arm,flip,t,talk})` — roles `papa · sharma · teacher · student · mom ·
+aunty · kid` (kurta, saree + bun, school cap + bag, glasses, mustache are all preset); moods `flat smile smirk
+grin o sad shock angry wink cry`; arms `down up phone point fold hip raise`. Origin = chest, ~1000 px tall at
+s:1, feet at +556. `t` (film time) drives breathing + blinking; `talk` flaps the mouth on the spoken line;
+a ground shadow is drawn automatically.
 **Props** `K.desk` · `K.paper(x,y,s,{lines,wobble})` (exam/report card) · `K.chai(x,y,s,{steam,t})` ·
 `K.tawa(x,y,s,{burn,smoke,t})` · `K.cooker(x,y,s,{whistle,t})` · `K.chappal(x,y,s,angle,a)` · `K.notes(x,y,s,n,t)` ·
 `K.bat` · `K.scooter(x,y,s,{wobble})`.

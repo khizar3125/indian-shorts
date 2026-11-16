@@ -86,7 +86,7 @@ export function classroom(board = []) {
  * moods: flat smile smirk grin o sad shock angry wink cry
  * arms: down up phone point fold hip raise
  */
-export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm = 'down', flip = 1 } = {}) {
+export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm = 'down', flip = 1, t = 0, talk = false } = {}) {
   const P = {
     papa:   { shirt: '#C9A227', pants: '#5A4632', kurta: true, mustache: true, hair: C.hair },
     sharma: { shirt: '#8E9BD6', pants: '#4A4237', kurta: true, mustache: true, glasses: true, hair: C.hair },
@@ -97,7 +97,12 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
     kid:    { shirt: C.orange, pants: '#4A4237', kurta: false, mustache: false, hair: C.hair },
   }[role] || {};
   const shirt = P.shirt || C.orange, pants = P.pants || '#4A4237', kurta = P.kurta;
-  ctx.save(); ctx.translate(x, y); ctx.scale(s * flip, s);
+  // THE LIFE: breathing bob + a blink cycle + talking mouth flaps (all from film time t — deterministic)
+  const bob = Math.sin(t * 2.2 + x * 0.013) * 5;
+  const blink = ((t * 0.37 + rnd(Math.floor(x) * 3.7)) % 1) < 0.055;
+  ctx.save(); ctx.translate(x, y + bob); ctx.scale(s * flip, s);
+  // ground shadow (drawn first, static — the body breathes above it)
+  ell(0, 620, 155, 30, 'rgba(58,36,21,0.16)');
   // legs (saree = one drape panel instead)
   if (P.saree) {
     ctx.fillStyle = role === 'mom' ? C.maroon : C.teal;
@@ -159,19 +164,22 @@ export function guy({ x, y, s = 1, role = 'papa', mood = 'flat', look = 0, arm =
   else if (mood === 'shock') { line([[lr - 56, hy - 52], [lr - 20, hy - 58]], ec, 11); line([[lr + 20, hy - 58], [lr + 56, hy - 52]], ec, 11); }
   else { line([[lr - 54, hy - 44 - brow / 2], [lr - 20, hy - 44 + brow / 2]], ec, 11); line([[lr + 20, hy - 44 + brow / 2], [lr + 54, hy - 44 - brow / 2]], ec, 11); }
   // eyes
-  if (mood === 'wink') { circle(-38 + lr, hy - 8, 13, ec); line([[lr + 20, hy - 8], [lr + 56, hy - 8]], ec, 11); }
+  // eyes (blink closes them into short lines; wink/cry keep their own look)
+  if (blink && mood !== 'wink' && mood !== 'cry') { line([[lr - 52, hy - 8], [lr - 24, hy - 8]], ec, 9); line([[lr + 24, hy - 8], [lr + 52, hy - 8]], ec, 9); }
+  else if (mood === 'wink') { circle(-38 + lr, hy - 8, 13, ec); line([[lr + 20, hy - 8], [lr + 56, hy - 8]], ec, 11); }
   else if (mood === 'cry') { circle(-38 + lr, hy - 8, 13, ec); circle(38 + lr, hy - 8, 13, ec);
     ell(-38 + lr, hy + 30, 10, 16, '#7EC8F0'); ell(38 + lr, hy + 30, 10, 16, '#7EC8F0'); }
   else { circle(-38 + lr, hy - 8, 13, ec); circle(38 + lr, hy - 8, 13, ec); circle(-34 + lr, hy - 12, 4, C.white); circle(42 + lr, hy - 12, 4, C.white); }
   // mustache / beard
   if (P.mustache) { ctx.beginPath(); ctx.ellipse(lr, hy + 26, 40, 14, 0, 0, TAU); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
   if (P.beard) { ctx.beginPath(); ctx.ellipse(lr, hy + 48, 62, 40, 0, 0, Math.PI); ctx.fillStyle = P.hair || C.hair; ctx.fill(); }
-  // mouth
+  // mouth (when the character speaks, the mouth flaps at ~8 Hz on top of the mood)
+  const flap = talk && Math.sin(t * 16 + x * 0.021) > 0;
   ctx.lineWidth = 10;
   if (mood === 'smile') { ctx.beginPath(); ctx.arc(lr, hy + 34, 26, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke(); }
   else if (mood === 'smirk') { ctx.beginPath(); ctx.arc(lr - 6, hy + 30, 24, 0.1 * Math.PI, 0.75 * Math.PI); ctx.stroke(); }
-  else if (mood === 'grin') { ctx.fillStyle = ec; ctx.beginPath(); ctx.roundRect(lr - 34, hy + 26, 68, 22, 11); ctx.fill(); }
-  else if (mood === 'o' || mood === 'shock') { ctx.fillStyle = ec; ctx.beginPath(); ctx.ellipse(lr, hy + 42, 18, 26, 0, 0, TAU); ctx.fill(); }
+  else if (mood === 'grin') { ctx.fillStyle = ec; ctx.beginPath(); ctx.roundRect(lr - 34, hy + 26, 68, flap ? 30 : 22, 11); ctx.fill(); }
+  else if (flap || mood === 'o' || mood === 'shock') { ctx.fillStyle = ec; ctx.beginPath(); ctx.ellipse(lr, hy + 42, flap ? 15 : 18, flap ? 20 : 26, 0, 0, TAU); ctx.fill(); }
   else if (mood === 'sad' || mood === 'cry') { ctx.beginPath(); ctx.arc(lr, hy + 58, 26, 1.15 * Math.PI, 1.85 * Math.PI); ctx.stroke(); }
   else if (mood === 'angry') { line([[lr - 24, hy + 52], [lr + 24, hy + 44]], ec, 10); }
   else line([[lr - 22, hy + 42], [lr + 22, hy + 42]], ec, 10);
