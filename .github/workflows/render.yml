@@ -1,0 +1,71 @@
+name: render
+# Renders one project under projects/ entirely on the runner. Phone/laptop does nothing.
+#   Run tab -> render -> Run workflow -> project: twitter-hack, mode: full
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project folder under projects/'
+        required: true
+        default: 'twitter-hack'
+      mode:
+        description: 'full = MP4 · draft = fast MP4 · sheet = contact sheet only'
+        required: true
+        default: 'full'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render-${{ inputs.project }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # the two free local models (Kokoro voice ~340 MB, Whisper small.en ~0.5 GB) — cached between runs
+      - name: Cache AI models
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.faceless-shorts/kokoro
+            ~/.cache/huggingface
+          key: models-kokoro-v1.0-whisper-small.en
+
+      - name: Install python deps
+        run: pip install -q numpy scipy kokoro-onnx faster-whisper
+
+      - name: Render
+        run: bash scripts/ci_render.sh "${{ inputs.project }}" "${{ inputs.mode }}"
+
+      - name: QA sheet + MP4 as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.project }}
+          path: |
+            projects/${{ inputs.project }}/renders/*.mp4
+            projects/${{ inputs.project }}/review/all.jpg
+            projects/${{ inputs.project }}/review/check.txt
+          retention-days: 30
+
+      - name: Attach MP4 to a release
+        if: ${{ inputs.mode == 'full' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="video-$(date -u +%Y%m%d-%H%M)"
+          gh release create "$TAG" "projects/${{ inputs.project }}/renders/${{ inputs.project }}.mp4" \
+            --title "${{ inputs.project }} · $TAG" \
+            --notes "Faceless short rendered by GitHub Actions. Contact sheet + timings are in the run artifacts."

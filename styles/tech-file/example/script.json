@@ -1,0 +1,35 @@
+{
+  "title": "The 17-Year-Old Who Hacked Twitter",
+  "voice": "am_michael",
+  "speed": 1.05,
+  "lead": 0.45,
+  "outro": 0.9,
+  "gap": 0.3,
+  "music": "tension",
+  "sources": [
+    "Reuters, July 15 2020: hackers took over 130 high-profile Twitter accounts (Obama, Biden, Musk, Gates, Apple, Kanye West) with the same bitcoin-doubling scam, and Twitter blocked verified accounts from tweeting while it fixed the breach",
+    "US Department of Justice, July 31 2020: Graham Ivan Clark, 17, of Tampa, Florida, was charged as the mastermind; he gained access by phone spear-phishing (vishing) Twitter employees, then used an internal admin tool to take over accounts; about $117,000 (12.86 BTC) was collected",
+    "US Department of Justice / court records, March 2021: Clark pleaded guilty to 30 counts and was sentenced to three years in a juvenile facility"
+  ],
+  "lines": [
+    { "text": "One July afternoon in twenty twenty, Barack Obama tweeted he was giving away money.", "caps": "ONE JULY *AFTERNOON | IN TWENTY *TWENTY | OBAMA *TWEETED" },
+    { "text": "So did Elon Musk, Bill Gates, and Apple.", "caps": "SO DID *ELON MUSK | BILL *GATES | AND *APPLE" },
+    { "text": "But it wasn't them.", "caps": "BUT IT | *WASN'T THEM" },
+    { "text": "It was a seventeen-year-old kid from Florida.", "caps": "A 17-YEAR-OLD *KID | FROM *FLORIDA" },
+    { "text": "His name was Graham Clark,", "caps": "HIS NAME WAS | *GRAHAM CLARK" },
+    { "text": "and he didn't write a single line of malware.", "caps": "AND HE *DIDN'T | WRITE A *LINE | OF *MALWARE" },
+    { "text": "He picked up the phone.", "caps": "HE *PICKED UP | THE *PHONE" },
+    { "text": "He called Twitter employees, pretending to be from the IT department,", "caps": "HE CALLED *TWITTER | PRETENDING TO BE | FROM THE *IT DEPARTMENT" },
+    { "text": "and asked for their login credentials.", "caps": "AND ASKED FOR | THEIR *LOGIN | *CREDENTIALS" },
+    { "text": "One of them typed it in.", "caps": "ONE OF THEM | TYPED IT *IN" },
+    { "text": "That gave him the internal admin tool,", "caps": "THAT GAVE HIM | THE INTERNAL | *ADMIN TOOL" },
+    { "text": "the one that controls every account on the platform.", "caps": "THE ONE THAT | CONTROLS *EVERY | *ACCOUNT" },
+    { "text": "In minutes, a hundred and thirty of the world's biggest accounts were posting the same scam,", "caps": "IN *MINUTES | THE BIGGEST *ACCOUNTS | POSTED ONE *SCAM" },
+    { "text": "and about a hundred and seventeen thousand dollars poured in.", "caps": "AND ABOUT | $117,000 *POURED | *IN" },
+    { "text": "But here's the part people miss.", "caps": "BUT *HERE'S | THE PART | *PEOPLE MISS" },
+    { "text": "He never cracked Twitter's security.", "caps": "HE NEVER CRACKED | TWITTER'S *SECURITY" },
+    { "text": "He cracked a person.", "caps": "HE CRACKED | A *PERSON" },
+    { "text": "So remember, the strongest firewall in the world", "caps": "SO *REMEMBER | THE STRONGEST *FIREWALL | IN THE *WORLD" },
+    { "text": "is still a human being who answers the phone.", "caps": "IS STILL A | *HUMAN BEING | WHO ANSWERS | THE *PHONE" }
+  ]
+}

@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Desi Skit Shorts</title>
+<style>
+@font-face { font-family: 'Baloo2'; font-weight: 100 900; src: url('fonts/Baloo2.ttf') format('truetype'); }
+@font-face { font-family: 'Inter'; font-weight: 900; src: url('fonts/Inter-Black.otf') format('opentype'); }
+html, body { margin: 0; background: #111; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; }
+canvas { display: block; height: 100vh; width: auto; max-width: 100vw; object-fit: contain; }
+body.capture canvas { height: auto; width: auto; }
+#play { position: fixed; font: 800 28px Baloo2, sans-serif; padding: 18px 36px; border: 0; border-radius: 40px; background: #FFC93C; color: #3A2415; cursor: pointer; }
+</style></head>
+<body>
+<canvas id="cv" width="1080" height="1920"></canvas>
+<button id="play" hidden>▶ PLAY</button>
+<script>if (location.search.includes('capture')) document.body.className = 'capture';</script>
+<script type="module" src="src/main.js"></script>
+</body></html>
