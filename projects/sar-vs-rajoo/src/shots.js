@@ -143,7 +143,7 @@ export function buildShots() {
 
   // ── 9 · सर: मतलब? ────────────────────────────────────────────────────────
   {
-    const st = cut(8), m = Wd('मतलब?', 9) - st - 0.05;
+    const st = cut(8), m = Wd('मतलब?', 8) - st - 0.05;
     add({ id: 'S09', at: st, cam: [TEACHER[0], 560], zoom: 0.18, note: 'hard zoom on सर: giant मतलब?',
       draw(lt) {
         K.classroom([]);
