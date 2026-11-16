@@ -77,8 +77,8 @@ export function buildShots() {
         rajoo({ x: 190, y: 780, s: 0.42, mood: 'smirk', arm: 'up', t, talk: true });
         bigText('0', 560, 560, 300, C.chalk, 0, 1);
         const p = eob(seg(lt, das, das + 0.3));
-        if (p > 0) { ctx.save(); ctx.globalAlpha = p; bigText('1', 560 - 190 * p, 560, 300, C.yellow, 0, p); ctx.restore();
-          if (p >= 1) bigText('10', 540, 560, 300, C.yellow); ctx.globalAlpha = 1; }
+        if (p > 0 && p < 1) { ctx.save(); ctx.globalAlpha = p; bigText('1', 560 - 190 * p, 560, 300, C.yellow, 0, p); ctx.restore(); }
+        if (p >= 1) bigText('10', 540, 560, 300, C.yellow);
         K.nameTag('राजू', 260, 440, C.blue, eob(seg(lt, 0.1, 0.4)));
       } });
     cue(st, 'whoosh'); cue(st + das, 'tock'); cue(st + das + 0.3, 'sparkle', { gain: 0.8 });
